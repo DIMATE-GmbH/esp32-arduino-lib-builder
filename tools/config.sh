@@ -31,12 +31,14 @@ if [ -z "$CHIP_VARIANT" ]; then
 fi
 
 # Owner of the target ESP32 Arduino repository
-AR_USER="${GITHUB_REPOSITORY_OWNER:-espressif}"
+AR_USER="DIMATE-GmbH"
 
-# The full name of the repository
+# The full name of the forked repository
 AR_REPO="$AR_USER/arduino-esp32"
-IDF_REPO="$AR_USER/esp-idf"
 AR_LIBS_REPO="$AR_USER/esp32-arduino-lib-builder"
+
+# The full name of the official repository
+IDF_REPO="$AR_USER/esp-idf"
 
 AR_REPO_URL="https://github.com/$AR_REPO.git"
 IDF_REPO_URL="https://github.com/$IDF_REPO.git"
