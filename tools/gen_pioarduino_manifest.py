@@ -5,13 +5,13 @@ import re
 import sys
 
 MANIFEST_DATA = {
-    "name": "framework-arduinoespressif32-libs",
-    "description": "Precompiled libraries for Arduino Wiring-based Framework for the Espressif ESP32 series of SoCs",
+    "name": "framework-arduinoespressif32-libs-patch",
+    "description": "Precompiled libraries for Arduino Wiring-based Framework, adjusted for the Espressif ESP32 / Pico32 SoC",
     "keywords": ["framework", "arduino", "espressif", "esp32"],
     "license": "LGPL-2.1-or-later",
     "repository": {
         "type": "git",
-        "url": "https://github.com/espressif/esp32-arduino-lib-builder",
+        "url": "https://github.com/DIMATE-GmbH/esp32-arduino-lib-builder",
     },
 }
 

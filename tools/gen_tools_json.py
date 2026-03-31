@@ -179,25 +179,10 @@ if __name__ == '__main__':
                 "size": str(tool_data['size'])
             }
 
-            if arch == "win32":
-                system["host"] = "i686-mingw32";
-            elif arch == "win64":
-                system["host"] = "x86_64-mingw32";
-            elif arch == "macos-arm64":
+            if arch == "macos-arm64":
                 system["host"] = "arm64-apple-darwin";
             elif arch == "macos":
                 system["host"] = "x86_64-apple-darwin";
-            elif arch == "linux-amd64":
-                system["host"] = "x86_64-pc-linux-gnu";
-            elif arch == "linux-i686":
-                system["host"] = "i686-pc-linux-gnu";
-            elif arch == "linux-arm64":
-                system["host"] = "aarch64-linux-gnu";
-            elif arch == "linux-armel":
-                system["host"] = "arm-linux-gnueabihf";
-            elif arch == "linux-armhf":
-                # system["host"] = "arm-linux-gnueabihf";
-                continue
             else :
                 continue
 
