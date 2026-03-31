@@ -333,11 +333,11 @@ fi
 # Generate pioarduino manifest file
 if [ "$BUILD_TYPE" = "all" ]; then
     echo "* Generating pioarduino manifest file..."
-    pushd $IDF_PATH
-    ibr=$(git describe --all 2>/dev/null)
-    ic=$(git -C "$IDF_PATH" rev-parse --short HEAD)
-    popd
-    python3 ./tools/gen_pioarduino_manifest.py -o "$TOOLS_JSON_OUT/" -s "$ibr" -c "$ic"
+
+    export TAG_ESP_IDF="$(git -C "$IDF_PATH" describe --tags $(git -C "$IDF_PATH" rev-list --tags --max-count=1))"
+    export TAG_ARDUINO_ESP32="$(git -C "$ARDUINO_ESP32_PATH" describe --tags $(git -C "$ARDUINO_ESP32_PATH" rev-list --tags --max-count=1))"
+
+    python3 ./tools/gen_pioarduino_manifest.py -o "$TOOLS_JSON_OUT/" --tag-esp-idf "$TAG_ESP_IDF" --tag-arduino-esp32 "$TAG_ARDUINO_ESP32"
     if [ $? -ne 0 ]; then exit 1; fi
 fi
 

@@ -7,6 +7,10 @@ if [ -z "$IDF_PATH" ]; then
     export IDF_PATH="$PWD/esp-idf"
 fi
 
+if [ -z "$ARDUINO_ESP32_PATH" ]; then
+    export ARDUINO_ESP32_PATH="$PWD/components/arduino"
+fi
+
 if [ -z "$IDF_BRANCH" ]; then
     IDF_BRANCH="release/v5.5"
 fi
