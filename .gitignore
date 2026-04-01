@@ -22,3 +22,9 @@ version.txt
 dependencies.lock
 managed_components/
 target/
+
+# Ignore ZIP archives created
+esp32-arduino-lib-builder-*.zip
+esp32-arduino-lib-builder-*/
+esp32-libs-*.zip
+esp32-libs-*/

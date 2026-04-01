@@ -19,40 +19,47 @@ COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER="$(git log --format="%h" -n 1)"
 # 1) Build esp32-arduino-lib-builder-*.zip for the actual "package_index.json"
 #    that only contains the limited content.
 
-pushd out/tools/esp32-arduino-libs/esp32
+FOLDER="esp32-arduino-lib-builder-$TAG_ARDUINO_ESP32-$COMMIT_SHORT_ARDUINO_ESP32-$COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER"
+ARCHIVE="$FOLDER.zip"
 
-ARCHIVE="esp32-arduino-lib-builder-$TAG_ARDUINO_ESP32-$COMMIT_SHORT_ARDUINO_ESP32-$COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER.zip"
+rm -rf $FOLDER
+rm -f $ARCHIVE
 
-rm -f ../$ARCHIVE
-zip -r ../$ARCHIVE \
-  bin/ \
-  dio_qspi/ \
-  flags/ \
-  include/ \
-  ld/ \
-  lib/ \
-  qio_qspi/ \
-  sdkconfig
+mkdir $FOLDER
 
-sha256 ../$ARCHIVE
+cp -a out/tools/esp32-arduino-libs/esp32/bin $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/dio_qspi $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/flags $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/include $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/ld $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/lib $FOLDER
+cp -a out/tools/esp32-arduino-libs/esp32/qio_qspi $FOLDER
+cp out/tools/esp32-arduino-libs/esp32/sdkconfig $FOLDER
+cp out/tools/esp32-arduino-libs/versions.txt $FOLDER
 
-popd
+zip -r $ARCHIVE $FOLDER >/dev/null
+
+sha256 $ARCHIVE
+stat -f%z $ARCHIVE
 
 
 # 2) Build esp32-libs-*.zip for the templated "*index.json" file that is used
 #    by this build process itself (!?) for whatever reason.
 
-pushd out/tools/esp32-arduino-libs
+FOLDER="esp32-libs-$TAG_ESP_IDF-$TAG_ARDUINO_ESP32"
+ARCHIVE="$FOLDER.zip"
 
-ARCHIVE="esp32-libs-$TAG_ESP_IDF-$TAG_ARDUINO_ESP32.zip"
-
+rm -rf $FOLDER
 rm -f $ARCHIVE
-zip -r $ARCHIVE \
-  esp32/ \
-  package.json \
-  tools.json \
-  versions.txt
+
+mkdir $FOLDER
+
+cp -a out/tools/esp32-arduino-libs/esp32 $FOLDER
+cp out/tools/esp32-arduino-libs/package.json $FOLDER
+cp out/tools/esp32-arduino-libs/tools.json $FOLDER
+cp out/tools/esp32-arduino-libs/versions.txt $FOLDER
+
+zip -r $ARCHIVE $FOLDER >/dev/null
 
 sha256 $ARCHIVE
-
-popd
+stat -f%z $ARCHIVE
