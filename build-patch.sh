@@ -12,6 +12,36 @@ source build.sh \
   -A patch-$VERSION_ARDUINO_ESP32 \
   -I release/v$VERSION_ESP_IDF
 
+COMMIT_SHORT_ARDUINO_ESP32="$(git -C $ARDUINO_ESP32_PATH log --format="%h" -n 1)"
+COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER="$(git log --format="%h" -n 1)"
+
+
+# 1) Build esp32-arduino-lib-builder-*.zip for the actual "package_index.json"
+#    that only contains the limited content.
+
+pushd out/tools/esp32-arduino-libs/esp32
+
+ARCHIVE="esp32-arduino-lib-builder-$TAG_ARDUINO_ESP32-$COMMIT_SHORT_ARDUINO_ESP32-$COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER.zip"
+
+rm -f ../$ARCHIVE
+zip -r ../$ARCHIVE \
+  bin/ \
+  dio_qspi/ \
+  flags/ \
+  include/ \
+  ld/ \
+  lib/ \
+  qio_qspi/ \
+  sdkconfig
+
+sha256 ../$ARCHIVE
+
+popd
+
+
+# 2) Build esp32-libs-*.zip for the templated "*index.json" file that is used
+#    by this build process itself (!?) for whatever reason.
+
 pushd out/tools/esp32-arduino-libs
 
 ARCHIVE="esp32-libs-$TAG_ESP_IDF-$TAG_ARDUINO_ESP32.zip"
