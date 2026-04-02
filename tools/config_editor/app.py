@@ -135,12 +135,8 @@ class ConfigEditorApp(App):
         self.push_screen("main")
 
 def arduino_default_path():
-    sys_name = platform.system()
     home = str(Path.home())
-    if sys_name == "Linux":
-        return os.path.join(home, "Arduino", "hardware", "espressif", "esp32")
-    else: # Windows and MacOS
-        return os.path.join(home, "Documents", "Arduino", "hardware", "espressif", "esp32")
+    return os.path.join(home, "Documents", "Arduino", "hardware", "espressif", "esp32")
 
 def check_arduino_path(path):
     return os.path.isdir(path)

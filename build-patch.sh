@@ -6,6 +6,49 @@
 VERSION_ESP_IDF="5.5"
 VERSION_ARDUINO_ESP32="3.3.7"
 
+# Replace template with value in a file
+function replaceStringInFile() {
+    sed -ir "s#$2#$3#" $1
+    rm "$1r"
+}
+
+function adjustSdkconfig() {
+  replaceStringInFile "$1" \
+    "CONFIG_ESP32_WIFI_ENABLED=y" \
+    "CONFIG_ESP32_WIFI_ENABLED=n"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_ESP_WIFI_ENABLED=y" \
+    "CONFIG_ESP_WIFI_ENABLED=n"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_WIFI_ENABLED=y" \
+    "CONFIG_WIFI_ENABLED=n"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_BT_BLE_ENABLED=y" \
+    "CONFIG_BT_BLE_ENABLED=n"
+}
+
+function adjustSdkConfigH() {
+  replaceStringInFile "$1" \
+    "CONFIG_ESP32_WIFI_ENABLED 1" \
+    "CONFIG_ESP32_WIFI_ENABLED 0"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_ESP_WIFI_ENABLED 1" \
+    "CONFIG_ESP_WIFI_ENABLED 0"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_WIFI_ENABLED 1" \
+    "CONFIG_WIFI_ENABLED 0"
+  
+  replaceStringInFile "$1" \
+    "CONFIG_BT_BLE_ENABLED 1" \
+    "CONFIG_BT_BLE_ENABLED 0"
+}
+
+export EXTRA_CFLAGS="-DARDUINO_DISABLE_WIFI"
 source build.sh \
   -t esp32 \
   -D error \
@@ -15,11 +58,7 @@ source build.sh \
 COMMIT_SHORT_ARDUINO_ESP32="$(git -C $ARDUINO_ESP32_PATH log --format="%h" -n 1)"
 COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER="$(git log --format="%h" -n 1)"
 
-
-# 1) Build esp32-arduino-lib-builder-*.zip for the actual "package_index.json"
-#    that only contains the limited content.
-
-FOLDER="esp32-arduino-lib-builder-$TAG_ARDUINO_ESP32-$COMMIT_SHORT_ARDUINO_ESP32-$COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER"
+FOLDER="esp32-libs-$TAG_ARDUINO_ESP32-$COMMIT_SHORT_ARDUINO_ESP32-$COMMIT_SHORT_ESP32_ARDUINO_LIB_BUILDER"
 ARCHIVE="$FOLDER.zip"
 
 rm -rf $FOLDER
@@ -37,27 +76,9 @@ cp -a out/tools/esp32-arduino-libs/esp32/qio_qspi $FOLDER
 cp out/tools/esp32-arduino-libs/esp32/sdkconfig $FOLDER
 cp out/tools/esp32-arduino-libs/versions.txt $FOLDER
 
-zip -r $ARCHIVE $FOLDER >/dev/null
-
-sha256 $ARCHIVE
-stat -f%z $ARCHIVE
-
-
-# 2) Build esp32-libs-*.zip for the templated "*index.json" file that is used
-#    by this build process itself (!?) for whatever reason.
-
-FOLDER="esp32-libs-$TAG_ESP_IDF-$TAG_ARDUINO_ESP32"
-ARCHIVE="$FOLDER.zip"
-
-rm -rf $FOLDER
-rm -f $ARCHIVE
-
-mkdir $FOLDER
-
-cp -a out/tools/esp32-arduino-libs/esp32 $FOLDER
-cp out/tools/esp32-arduino-libs/package.json $FOLDER
-cp out/tools/esp32-arduino-libs/tools.json $FOLDER
-cp out/tools/esp32-arduino-libs/versions.txt $FOLDER
+adjustSdkconfig "$FOLDER/sdkconfig"
+adjustSdkConfigH "$FOLDER/dio_qspi/include/sdkconfig.h"
+adjustSdkConfigH "$FOLDER/qio_qspi/include/sdkconfig.h"
 
 zip -r $ARCHIVE $FOLDER >/dev/null
 

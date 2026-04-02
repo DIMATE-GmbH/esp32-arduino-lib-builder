@@ -57,7 +57,6 @@ AR_COMPS="$AR_ROOT/components"
 AR_MANAGED_COMPS="$AR_ROOT/managed_components"
 AR_OUT="$AR_ROOT/out"
 AR_TOOLS="$AR_OUT/tools"
-AR_PATCHES="$AR_ROOT/patches"
 AR_PLATFORM_TXT="$AR_OUT/platform.txt"
 AR_GEN_PART_PY="$AR_TOOLS/gen_esp32part.py"
 AR_SDK="$AR_TOOLS/esp32-arduino-libs/$CHIP_VARIANT"
@@ -71,49 +70,21 @@ if [ -d "$IDF_PATH" ]; then
     export IDF_BRANCH
 fi
 
-get_os() {
-    DEBUG "get_os()"
-    OSBITS=$(uname -m)
-    DEBUG "OSTYPE=$OSTYPE, OSBITS=$OSBITS"
-    if [[ "$OSTYPE" == "linux"* ]]; then
-        case "$OSBITS" in
-            i686) echo "linux32" ;;
-            x86_64) echo "linux64" ;;
-            armv7l) echo "linux-armel" ;;
-            *) echo "unknown"; return 1 ;;
-        esac
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        echo "macos"
-    elif [[ "$OSTYPE" == "cygwin" || "$OSTYPE" == "msys" || "$OSTYPE" == "win32" ]]; then
-        echo "win32"
-    else
-        echo "$OSTYPE"
-        return 1
-    fi
-}
-
-AR_OS=$(get_os)
-export SED="sed"
-export SSTAT="stat -c %s"
-export REALPATH="realpath"
-
-if [[ "$AR_OS" == "macos" ]]; then
-    if ! command -v gsed >/dev/null; then
-        echo "ERROR: gsed not installed" >&2
-        exit 1
-    fi
-    if ! command -v gawk >/dev/null; then
-        echo "ERROR: gawk not installed" >&2
-        exit 1
-    fi
-    if ! command -v grealpath >/dev/null; then
-        echo "ERROR: grealpath not installed (try: brew install coreutils)" >&2
-        exit 1
-    fi
-    export SED="gsed"
-    export SSTAT="stat -f %z"
-    export REALPATH="grealpath"
+if ! command -v gsed >/dev/null; then
+    echo "ERROR: gsed not installed" >&2
+    exit 1
 fi
+if ! command -v gawk >/dev/null; then
+    echo "ERROR: gawk not installed" >&2
+    exit 1
+fi
+if ! command -v grealpath >/dev/null; then
+    echo "ERROR: grealpath not installed (try: brew install coreutils)" >&2
+    exit 1
+fi
+export SED="gsed"
+export SSTAT="stat -f %z"
+export REALPATH="grealpath"
 
 github_get_libs_idf() {
     DEBUG "github_get_libs_idf($1, $2, $3)"

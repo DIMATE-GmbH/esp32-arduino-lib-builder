@@ -86,14 +86,8 @@ if __name__ == '__main__':
             farray['packages'][0]['platforms'][0]['toolsDependencies'].append(deps)
 
         systems = []
-        add_system(systems, "i686-mingw32", tool_url, tool_filename, tool_sha, tool_size)
-        add_system(systems, "x86_64-mingw32", tool_url, tool_filename, tool_sha, tool_size)
         add_system(systems, "arm64-apple-darwin", tool_url, tool_filename, tool_sha, tool_size)
         add_system(systems, "x86_64-apple-darwin", tool_url, tool_filename, tool_sha, tool_size)
-        add_system(systems, "x86_64-pc-linux-gnu", tool_url, tool_filename, tool_sha, tool_size)
-        add_system(systems, "i686-pc-linux-gnu", tool_url, tool_filename, tool_sha, tool_size)
-        add_system(systems, "aarch64-linux-gnu", tool_url, tool_filename, tool_sha, tool_size)
-        add_system(systems, "arm-linux-gnueabihf", tool_url, tool_filename, tool_sha, tool_size)
 
         tool_found = False
         for t in farray['packages'][0]['tools']:
